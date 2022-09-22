@@ -2,19 +2,17 @@
   <div class="container">
     <h1>список валют</h1>
     <div class="currencies">
-      <label for="find"
-        >найти валюту
+      <label for="find">
+        найти валюту
         <input type="search" name="find" v-model="search" />
       </label>
-      <label for="current-valute"
-        >текущая валюта
+      <label for="current-valute">текущая валюта
         <select name="current-valute" id="select-id" v-model="selectedCurrency">
-          <option v-for="item in getCurrencies" :key="item.ID" :value="item">
-            {{ item.CharCode }}
+          <option v-for="currency in currencies" :key="currency.ID" :value="currency">
+            {{ currency.CharCode }}
           </option>
         </select>
       </label>
-      <span>выбрано: {{ CharCode }}</span>
     </div>
     <div class="list">
       <ul>
@@ -24,12 +22,8 @@
             {{ item.Value }}
           </div>
           <div>{{ (item.Value - item.Previous).toFixed(4) }}</div>
-          <div v-if="item.Value - item.Previous > 0">
-            <RedArrow></RedArrow>
-          </div>
-          <div v-else>
-            <GreenArrow></GreenArrow>
-          </div>
+          <red-arrow v-if="item.Value > item.Previous" />
+          <green-arrow v-else />
         </li>
       </ul>
     </div>
@@ -42,38 +36,34 @@ import GreenArrow from './GreenArrow.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
+  components: { RedArrow, GreenArrow },
+  mounted() {
+    this.fetchCurrencies();
+  },
+
   data() {
     return {
       search: '',
       selectedCurrency: null,
     };
   },
+
   computed: {
     ...mapGetters([
-      'getCurrencies',
-      'getBaseValute',
-      'getCurrenciesWithoutBaseValute',
+      'currencies',
     ]),
     sortCurrenciesByName() {
-      return this.getCurrenciesWithoutBaseValute.filter((element) => {
-        return (
-          element.Name.toLowerCase().includes(this.search.toLowerCase()) ||
-          element.CharCode.toLowerCase().includes(this.search.toLowerCase())
-        );
-      });
-    },
-    CharCode() {
-      console.log(this.selectedCurrency);
-      return this.selectedCurrency;
+      const query = this.search.toLowerCase();
+      const selectedCurrency = this.selectedCurrency;
+      return this.currencies.filter(element =>
+          element !== selectedCurrency && (
+            element.Name.toLowerCase().includes(query) ||
+            element.CharCode.toLowerCase().includes(query)));
     },
   },
   methods: {
-    ...mapActions(['fetchCurrencies', 'changeBaseValute']),
+    ...mapActions(['fetchCurrencies']),
   },
-  async mounted() {
-    this.fetchCurrencies();
-  },
-  components: { RedArrow, GreenArrow },
 };
 </script>
 
