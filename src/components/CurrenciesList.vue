@@ -1,29 +1,37 @@
 <template>
   <div class="container">
-    <h1>список валют</h1>
     <div class="currencies">
       <label for="find">
         найти валюту
         <input type="search" name="find" v-model="search" />
       </label>
-      <label for="current-valute">текущая валюта
+      <label for="current-valute"
+        >текущая валюта
         <select name="current-valute" id="select-id" v-model="selectedCurrency">
-          <option v-for="currency in currencies" :key="currency.ID" :value="currency">
+          <option
+            v-for="currency in currencies"
+            :key="currency.ID"
+            :value="currency"
+          >
             {{ currency.CharCode }}
           </option>
         </select>
+        {{ selectedCurrency.Name }}
       </label>
     </div>
     <div class="list">
       <ul>
         <li v-for="item in sortCurrenciesByName" :key="item.ID">
-          <div class="currency-name">{{ item.Name }} ({{ item.CharCode }})</div>
+          <div class="currency-name">
+            1 {{ item.Name }} ({{ item.CharCode }})
+          </div>
           <div class="currency-value">
-            {{ item.Value }}
+            {{ (item.Value / selectedCurrency.Value).toFixed(4) }}
+            {{ selectedCurrency.CharCode }}
           </div>
           <div>{{ (item.Value - item.Previous).toFixed(4) }}</div>
-          <red-arrow v-if="item.Value > item.Previous" />
-          <green-arrow v-else />
+          <negative-arrow v-if="item.Value > item.Previous" />
+          <positive-arrow v-else />
         </li>
       </ul>
     </div>
@@ -31,12 +39,12 @@
 </template>
 
 <script>
-import RedArrow from './RedArrow.vue';
-import GreenArrow from './GreenArrow.vue';
+import NegativeArrow from './NegativeArrow.vue';
+import PositiveArrow from './PositiveArrow.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  components: { RedArrow, GreenArrow },
+  components: { NegativeArrow, PositiveArrow },
   mounted() {
     this.fetchCurrencies();
   },
@@ -44,21 +52,26 @@ export default {
   data() {
     return {
       search: '',
-      selectedCurrency: null,
+      selectedCurrency: {
+        CharCode: 'RUB',
+        Value: 1,
+        Name: 'Российских рублей',
+        Previous: 1,
+      },
     };
   },
 
   computed: {
-    ...mapGetters([
-      'currencies',
-    ]),
+    ...mapGetters(['currencies']),
     sortCurrenciesByName() {
       const query = this.search.toLowerCase();
       const selectedCurrency = this.selectedCurrency;
-      return this.currencies.filter(element =>
-          element !== selectedCurrency && (
-            element.Name.toLowerCase().includes(query) ||
-            element.CharCode.toLowerCase().includes(query)));
+      return this.currencies.filter(
+        (element) =>
+          element !== selectedCurrency &&
+          (element.Name.toLowerCase().includes(query) ||
+            element.CharCode.toLowerCase().includes(query))
+      );
     },
   },
   methods: {
@@ -68,6 +81,15 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  width: 70%;
+  margin: 0px auto;
+}
+.currencies {
+  display: flex;
+  justify-content: space-around;
+}
+
 li {
   list-style: none;
   display: flex;

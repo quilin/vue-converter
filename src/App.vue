@@ -1,14 +1,15 @@
 <template>
   <div class="container">
+    <HeaderWithLinks class="header"></HeaderWithLinks>
+
     <router-view />
-    <CurrenciesList></CurrenciesList>
   </div>
 </template>
 <script>
-import CurrenciesList from './components/CurrenciesList.vue';
+import HeaderWithLinks from './components/HeaderWithLinks.vue';
 
 export default {
-  components: { CurrenciesList },
+  components: { HeaderWithLinks },
 
   computed: {},
   methods: {},
@@ -22,5 +23,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.header {
+  margin-bottom: 20px;
 }
 </style>
