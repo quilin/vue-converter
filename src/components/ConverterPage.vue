@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="block">
-      <CurrencySelectionBlock :value="first">
+      <CurrencySelectionBlock v-model="first">
         <input
           type="number"
           v-model="message"
@@ -11,8 +11,8 @@
     </div>
     <button>перевернуть</button>
     <div class="block">
-      <CurrencySelectionBlock :value="second">
-        <p>Введённое сообщение: {{ +second.Value * message }}</p>
+      <CurrencySelectionBlock v-model="second">
+        <p>Введённое сообщение: {{ first.Value * message }}</p>
       </CurrencySelectionBlock>
     </div>
   </div>
@@ -29,6 +29,7 @@ export default {
       second: '',
     };
   },
+  methods: {},
 };
 </script>
 

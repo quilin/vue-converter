@@ -2,10 +2,14 @@
   <div class="containers">
     <label for="select"
       >выберите валюту
-      <select name="select" v-model="currentCurrency">
+      <select
+        name="select"
+        :value="currentCurrency"
+        @change="$emit('change', $event.target.value)"
+      >
         <option
           :value="currency"
-          v-for="currency in this.$store.state.currencies"
+          v-for="currency in currencies"
           :key="currency.id"
         >
           {{ currency.CharCode }}
@@ -33,6 +37,9 @@ export default {
   },
   methods: {
     ...mapActions(['fetchCurrencies']),
+    textUpdate(evt) {
+      this.$emit('input', evt.target.value);
+    },
   },
 };
 </script>
