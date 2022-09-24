@@ -1,17 +1,9 @@
 <template>
   <div class="containers">
-    <label for="select"
-      >выберите валюту
-      <select
-        name="select"
-        :value="currentCurrency"
-        @change="$emit('change', $event.target.value)"
-      >
-        <option
-          :value="currency"
-          v-for="currency in currencies"
-          :key="currency.id"
-        >
+    <label>
+      выберите валюту
+      <select id="select" v-model="current">
+        <option v-for="currency in currencies" :value="currency" :key="currency.id">
           {{ currency.CharCode }}
         </option>
       </select>
@@ -27,19 +19,20 @@ export default {
   mounted() {
     this.fetchCurrencies();
   },
+  props: ['modelValue'],
   data() {
     return {
-      currentCurrency: '',
-    };
+      current: null
+    }
   },
   computed: {
     ...mapGetters(['currencies']),
   },
+  watch: {
+    current(value) { this.$emit('update:modelValue', value) },
+  },
   methods: {
     ...mapActions(['fetchCurrencies']),
-    textUpdate(evt) {
-      this.$emit('input', evt.target.value);
-    },
   },
 };
 </script>

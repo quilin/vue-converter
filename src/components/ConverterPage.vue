@@ -1,19 +1,15 @@
 <template>
   <div class="container">
     <div class="block">
-      <CurrencySelectionBlock v-model="first">
-        <input
-          type="number"
-          v-model="message"
-          placeholder="отредактируй меня"
-        />
-      </CurrencySelectionBlock>
+      <currency-selection-block v-model="first">
+        <input type="number" v-model="amount" placeholder="отредактируй меня" />
+      </currency-selection-block>
     </div>
     <button>перевернуть</button>
     <div class="block">
-      <CurrencySelectionBlock v-model="second">
-        <p>Введённое сообщение: {{ first.Value * message }}</p>
-      </CurrencySelectionBlock>
+      <currency-selection-block v-model="second">
+        <p>Введённое сообщение: <template v-if="first">{{ first.Value * amount }}</template></p>
+      </currency-selection-block>
     </div>
   </div>
 </template>
@@ -24,9 +20,9 @@ export default {
   components: { CurrencySelectionBlock },
   data() {
     return {
-      message: '',
-      first: '',
-      second: '',
+      amount: 0,
+      first: null,
+      second: null,
     };
   },
   methods: {},
@@ -39,7 +35,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 1000px;
-  margin: 0px auto;
+  margin: 0 auto;
 }
 .block {
   height: 400px;
@@ -52,7 +48,7 @@ button {
   cursor: pointer;
 }
 input {
-  margin: 40px auto 0px;
+  margin: 40px auto 0;
   width: 200px;
   height: 25px;
 }
